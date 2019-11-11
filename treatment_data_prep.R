@@ -98,8 +98,10 @@ treated_trees <- treated_trees[1:3,]
 library(ggplot2)
 ggplot(data=treated_trees, aes(x=Treatment, y=Tree_Count, fill=Tree_Count)) +
   geom_bar(stat="identity", position=position_dodge()) +
+  labs(title="Trees Treated", x="Method", y = "Number of Trees") +
   geom_text(aes(label=Tree_Count), vjust=1.6, color="black", size=3.5) +
-  theme(legend.position="none")
+  theme(legend.position="none") +
+  theme(plot.title = element_text(hjust = 0.5))
 
 # Plot for Properties and treatments
 property_treatments <- data.frame(surveys)
@@ -110,13 +112,69 @@ property_treatments <- property_treatments[property_treatments$treatment != 'non
 ggplot(data=property_treatments, aes(x=treatment, y=Freq, fill=year)) +
   geom_bar(stat="identity", position=position_dodge()) +
   scale_fill_brewer(palette="Paired") +
-  geom_text(aes(label=Freq), vjust=1.6, color="black", position = position_dodge(0.9), size=3.5)
+  labs(title="Treatment Status of Properties with Host", x="Treatment Status", y = "Property Count") +
+  geom_text(aes(label=Freq), vjust=1.6, color="black", position = position_dodge(0.9), size=3.5) +
+  theme(plot.title = element_text(hjust = 0.5))
 
 
+## plot properties and surveys
+property_surveys <- data.frame(surveys)
+property_surveys <- data.frame(table(property_surveys[,c(11,13)]))
 
-## Make a Treatment raster based on new data.
-treatment_parcels <- surveys[surveys$treatment == 'complete',]
+ggplot(data=property_surveys, aes(x=survey, y=Freq, fill=year)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  scale_fill_brewer(palette="Paired") +
+  labs(title="Survey Status", x="Survey Status", y = "Property Count") +
+  geom_text(aes(label=Freq), vjust=1.6, color="black", position = position_dodge(0.9), size=3.5) +
+  theme(plot.title = element_text(hjust = 0.5))
 
+# Host presence plots
+property_hosts <- data.frame(surveys)
+property_hosts <- data.frame(table(property_hosts[,c(10,13)]))
+property_hosts <- property_hosts[property_hosts$host != 'unknown',]
+
+ggplot(data=property_hosts, aes(x=host, y=Freq, fill=year)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  scale_fill_brewer(palette="Paired") +
+  labs(title="Host Presence at Surveyed Properties", x="Host Present", y = "Property Count") +
+  geom_text(aes(label=Freq), vjust=1.6, color="black", position = position_dodge(0.9), size=3.5) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+## Make a treatment rasters based on new data for 2018 and 2019.
+treatment_parcels <- surveys[!is.na(surveys$treatment), ]
+treatment_parcels <- surveys[treatment_parcels$treatment == 'complete', ]
+
+treatment_2018 <- treatment_parcels[treatment_parcels$year == 2018,]
+treatment_2019 <- treatment_parcels[treatment_parcels$year == 2019,]
+
+infect <- raster(infected_file)
+plot(infect)
+plot(treatment_2018, add = TRUE)
+plot(treatment_2019, add = TRUE)
+
+treatment_raster_2018 <- rasterize(treatment_2018, infect, fun = "last", getCover = TRUE)
+treatment_raster_2018_e80 <- treatment_raster_2018 * 0.8
+treatment_raster_2018_e70 <- treatment_raster_2018 * 0.7
+treatment_raster_2018_e60 <- treatment_raster_2018 * 0.6
+treatment_raster_2018_e50 <- treatment_raster_2018 * 0.5
+plot(treatment_raster_2018)
+writeRaster(treatment_raster_2018, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2018_e100.tif", overwrite = TRUE)
+writeRaster(treatment_raster_2018_e50, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2018_e50.tif", overwrite = TRUE)
+writeRaster(treatment_raster_2018_e60, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2018_e60.tif", overwrite = TRUE)
+writeRaster(treatment_raster_2018_e70, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2018_e70.tif", overwrite = TRUE)
+writeRaster(treatment_raster_2018_e80, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2018_e80.tif", overwrite = TRUE)
+
+treatment_raster_2019 <- rasterize(treatment_2019, infect, fun = "last", getCover = TRUE)
+treatment_raster_2019_e80 <- treatment_raster_2019 * 0.8
+treatment_raster_2019_e70 <- treatment_raster_2019 * 0.7
+treatment_raster_2019_e60 <- treatment_raster_2019 * 0.6
+treatment_raster_2019_e50 <- treatment_raster_2019 * 0.5
+plot(treatment_raster_2019)
+writeRaster(treatment_raster_2019, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2019_e100.tif", overwrite = TRUE)
+writeRaster(treatment_raster_2019_e50, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2019_e50.tif", overwrite = TRUE)
+writeRaster(treatment_raster_2019_e60, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2019_e60.tif", overwrite = TRUE)
+writeRaster(treatment_raster_2019_e70, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2019_e70.tif", overwrite = TRUE)
+writeRaster(treatment_raster_2019_e80, "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2019_e80.tif", overwrite = TRUE)
 
 
 ## read in treatment data
