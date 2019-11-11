@@ -24,7 +24,7 @@ lethal_temperature_month = 1
 random_seed = NULL
 reproductive_rate = 2.1
 # treatments_file = "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatment_0s.tif"
-treatments_file = "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatment_2019.tif"
+treatments_file = "H:/Shared drives/APHIS  Projects/PoPS/Case Studies/spotted_latternfly/slf_6_state_region_psuedo_mercator/treatments_2019_e100.tif"
 treatment_years = c(2019)
 treatment_month <- 5
 treatment_method <- "ratio"
